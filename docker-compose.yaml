@@ -1,0 +1,12 @@
+
+version: '3.2'
+services:
+  bbb-exporter:
+    container_name: x-ui-exporter
+    image: aminaleahmad/x-ui-exporter:v1
+    ports:
+      - '9688:9688'
+    environment:
+      x_ui_url: "URL"
+      x_ui_token: "TOKEN"
+    restart: unless-stopped

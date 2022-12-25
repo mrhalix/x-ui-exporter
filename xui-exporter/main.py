@@ -54,8 +54,8 @@ class xUiClient:
         return res
 
 # retrieve token from cookies after logging in
-token = os.environ['x_ui_token']
-host = os.environ['x_ui_url']
+token = os.getenv('x_ui_token')
+host = os.getenv('x_ui_url')
 xc = xUiClient(host, token) # url is like xui.mydomain.com:54321
 app = Flask(__name__)
 
