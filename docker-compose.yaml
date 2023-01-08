@@ -1,6 +1,6 @@
 version: '3.2'
 services:
-  bbb-exporter:
+  x-ui-exporter:
     container_name: x-ui-exporter
     image: aminaleahmad/x-ui-exporter:v1.1
     ports:
