@@ -7,5 +7,6 @@ services:
       - '9688:9688'
     environment:
       x_ui_url: "URL"
-      x_ui_token: "TOKEN"
+      x_ui_username: "USERNAME"
+      x_ui_password: "PASSWORD"
     restart: unless-stopped

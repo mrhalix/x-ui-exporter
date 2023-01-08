@@ -3,12 +3,28 @@ import json
 from flask import Flask, jsonify,  make_response
 import os
 class xUiClient:
-    def __init__(self, host, token):
+    def __init__(self, host, username, password):
+        self.tried_to_auth = False
         self.host = host
-        self.token = token
-        self.cookies = {
-            'session': self.token,
-        }
+        self.username = username
+        self.password = password
+        self.retrieve_session()
+    def retrieve_session(self):
+        if self.tried_to_auth:
+            print("your credentials seems to be wrong, please check them")
+            quit()
+        response = requests.post(f'http://{self.host}/login', data={'username': self.username, 'password': self.password}, verify=False)
+        if response.status_code == 200:
+            self.cookies = {
+                'session': response.cookies['session'],
+            }
+            print("SESSION RETRIEVED")
+            return True
+        else:
+            print(response.text)
+            print("RESULT CODE NOT 200")
+            self.tried_to_auth = True
+            return False
     def request(self, path, return_json=True):
         response = requests.post(f'http://{self.host}/{path}', cookies=self.cookies, verify=False)
         if response.status_code == 200:
@@ -16,8 +32,12 @@ class xUiClient:
                 return {"success":True, "data": json.loads(response.text)}
             else:
                 return response.text
+        elif response.status_code == 404:
+            print("session seems to be expired, trying to retrieve session")
+            self.retrieve_session()
+            return self.request(path, return_json)
         else:
-            print("RESULT CODE NOT 200")
+            print("RESULT CODE NOT 200/404", response.status_code, response.text)
             if return_json:
                 return {"success": False, "msg": "got !200"}
             else:
@@ -46,17 +66,15 @@ class xUiClient:
             response.append("swap_current " + str(float(result['swap']['current'])))
             response.append("swap_total " + str(float(result['swap']['total'])))
         return response
-    def inbound_list(self):
-        result = self.request("xui/inbound/list")
     def generate_results(self):
         res = ""
         res += "\n".join(self.server_status())
         return res
 
-# retrieve token from cookies after logging in
-token = os.getenv('x_ui_token')
+username = os.getenv('x_ui_username')
+password = os.getenv('x_ui_password')
 host = os.getenv('x_ui_url')
-xc = xUiClient(host, token) # url is like xui.mydomain.com:54321
+xc = xUiClient(host, username, password) # url is like xui.mydomain.com:54321
 app = Flask(__name__)
 
 @app.route("/metrics")
