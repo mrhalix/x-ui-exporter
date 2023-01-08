@@ -2,7 +2,7 @@ version: '3.2'
 services:
   bbb-exporter:
     container_name: x-ui-exporter
-    image: aminaleahmad/x-ui-exporter:v1
+    image: aminaleahmad/x-ui-exporter:v1.1
     ports:
       - '9688:9688'
     environment:
