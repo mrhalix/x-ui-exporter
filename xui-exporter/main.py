@@ -85,7 +85,7 @@ def metrics_endpoint():
         return response
     except Exception as e:
         print("ERROR", e)
-        return jsonify(res), 500
+        return 500
 
 if __name__ == "__main__":
    app.run(debug=False, host="0.0.0.0", port=9688)
